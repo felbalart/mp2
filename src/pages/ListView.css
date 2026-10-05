@@ -1,17 +1,8 @@
-.first-match {
+.list-status {
   margin: 0;
-  color: var(--text);
+  color: #777;
 
-  #first_match {
-    font-weight: 800;
-    color: var(--bb-blue);
-  }
-
-  em {
-    color: #777;
-  }
-
-  .error {
+  &.error {
     color: #c0392b;
   }
 }

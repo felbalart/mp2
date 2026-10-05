@@ -1,23 +1,23 @@
 import { useEffect, useState } from 'react'
-import { searchMovies } from '../api/tmdb'
+import { searchMovies, type Movie } from '../api/tmdb'
 
 const MIN_LENGTH = 4
 const DEBOUNCE_MS = 300
+const LIMIT = 50
 
 type Result = {
   query: string
-  title: string | null
+  movies: Movie[]
   error: string | null
 }
 
-export type FirstMatchState =
+export type MovieSearchState =
   | { status: 'idle' }
   | { status: 'loading' }
-  | { status: 'found'; title: string }
-  | { status: 'not-found' }
+  | { status: 'success'; movies: Movie[] }
   | { status: 'error'; message: string }
 
-export function useFirstMatch(rawQuery: string): FirstMatchState {
+export function useMovieSearch(rawQuery: string): MovieSearchState {
   const [result, setResult] = useState<Result | null>(null)
   const trimmed = rawQuery.trim()
   const query = trimmed.length >= MIN_LENGTH ? trimmed : ''
@@ -27,16 +27,12 @@ export function useFirstMatch(rawQuery: string): FirstMatchState {
 
     const controller = new AbortController()
     const timer = setTimeout(() => {
-      searchMovies(query, controller.signal)
-        .then((movies) => {
-          const needle = query.toLowerCase()
-          const match = movies.find((movie) => movie.title.toLowerCase().includes(needle))
-          setResult({ query, title: match?.title ?? null, error: null })
-        })
+      searchMovies(query, LIMIT, controller.signal)
+        .then((movies) => setResult({ query, movies, error: null }))
         .catch((err: unknown) => {
           if (controller.signal.aborted) return
           const message = err instanceof Error ? err.message : 'Unknown error'
-          setResult({ query, title: null, error: message })
+          setResult({ query, movies: [], error: message })
         })
     }, DEBOUNCE_MS)
 
@@ -49,6 +45,5 @@ export function useFirstMatch(rawQuery: string): FirstMatchState {
   if (!query) return { status: 'idle' }
   if (result?.query !== query) return { status: 'loading' }
   if (result.error) return { status: 'error', message: result.error }
-  if (result.title) return { status: 'found', title: result.title }
-  return { status: 'not-found' }
+  return { status: 'success', movies: result.movies }
 }

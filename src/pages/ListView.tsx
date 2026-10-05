@@ -1,23 +1,23 @@
 import { useState } from 'react'
 import SearchForm from '../components/SearchForm'
-import { useFirstMatch } from '../hooks/useFirstMatch'
+import MovieList from '../components/MovieList'
+import { useMovieSearch } from '../hooks/useMovieSearch'
 import './ListView.css'
 
 function ListView() {
   const [query, setQuery] = useState('')
-  const firstMatch = useFirstMatch(query)
+  const search = useMovieSearch(query)
 
   return (
     <section>
       <h1>List</h1>
       <SearchForm onChange={setQuery} />
-      <p className="first-match">
-        First match:{' '}
-        <span id="first_match">{firstMatch.status === 'found' ? firstMatch.title : ''}</span>
-        {firstMatch.status === 'loading' && <em>Searching…</em>}
-        {firstMatch.status === 'not-found' && <em>No match</em>}
-        {firstMatch.status === 'error' && <em className="error">{firstMatch.message}</em>}
-      </p>
+
+      {search.status === 'idle' && <p className="list-status">Type at least 4 characters to search.</p>}
+      {search.status === 'loading' && <p className="list-status">Searching…</p>}
+      {search.status === 'error' && <p className="list-status error">{search.message}</p>}
+      {search.status === 'success' && search.movies.length === 0 && <p className="list-status">No movies found.</p>}
+      {search.status === 'success' && search.movies.length > 0 && <MovieList movies={search.movies} />}
     </section>
   )
 }
