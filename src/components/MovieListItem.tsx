@@ -1,5 +1,6 @@
 import { posterUrl, type Movie } from '../api/tmdb'
 import RatingStar from './RatingStar'
+import { getRating } from '../utils/sortMovies'
 import './MovieList.css'
 
 type MovieListItemProps = {
@@ -9,7 +10,7 @@ type MovieListItemProps = {
 function MovieListItem({ movie }: MovieListItemProps) {
   const poster = posterUrl(movie.poster_path, 'w154')
   const year = movie.release_date?.slice(0, 4)
-  const rating = movie.vote_count > 0 && movie.vote_average > 0 ? movie.vote_average : null
+  const rating = getRating(movie)
 
   return (
     <li className="movie-item">

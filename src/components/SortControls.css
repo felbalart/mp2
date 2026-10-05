@@ -1,0 +1,54 @@
+.sort-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  margin: 0 0 20px;
+  font-size: 14px;
+}
+
+.sort-label {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--bb-blue);
+}
+
+.sort-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sort-field {
+  margin-right: 2px;
+  color: var(--text);
+}
+
+.sort-button {
+  padding: 4px 10px;
+  border: 2px solid var(--bb-blue);
+  border-radius: 4px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--bb-blue);
+  background: #fff;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover {
+    background: rgba(15, 62, 165, 0.08);
+  }
+
+  &.active {
+    color: var(--bb-yellow);
+    background: var(--bb-blue);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--bb-yellow);
+    outline-offset: 1px;
+  }
+}
