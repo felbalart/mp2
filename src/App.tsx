@@ -15,6 +15,7 @@ function App() {
           <Route path="/list" element={<ListView />} />
           <Route path="/gallery" element={<GalleryView />} />
           <Route path="/detail" element={<DetailView />} />
+          <Route path="/detail/:id" element={<DetailView />} />
         </Routes>
       </main>
     </>

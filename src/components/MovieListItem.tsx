@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import { posterUrl, type Movie } from '../api/tmdb'
 import RatingStar from './RatingStar'
 import { getRating } from '../utils/sortMovies'
@@ -13,21 +14,23 @@ function MovieListItem({ movie }: MovieListItemProps) {
   const rating = getRating(movie)
 
   return (
-    <li className="movie-item">
-      {poster ? (
-        <img className="movie-poster" src={poster} alt={`${movie.title} poster`} loading="lazy" />
-      ) : (
-        <div className="movie-poster movie-poster-empty" aria-hidden="true">
-          No image
+    <li>
+      <Link className="movie-item" to={`/detail/${movie.id}`}>
+        {poster ? (
+          <img className="movie-poster" src={poster} alt={`${movie.title} poster`} loading="lazy" />
+        ) : (
+          <div className="movie-poster movie-poster-empty" aria-hidden="true">
+            No image
+          </div>
+        )}
+        <div className="movie-info">
+          <h2 className="movie-title">
+            {movie.title}
+            {year && <span className="movie-year"> ({year})</span>}
+          </h2>
+          <RatingStar value={rating} />
         </div>
-      )}
-      <div className="movie-info">
-        <h2 className="movie-title">
-          {movie.title}
-          {year && <span className="movie-year"> ({year})</span>}
-        </h2>
-        <RatingStar value={rating} />
-      </div>
+      </Link>
     </li>
   )
 }

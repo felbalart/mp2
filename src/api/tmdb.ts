@@ -12,6 +12,8 @@ export type Movie = {
   poster_path: string | null
   vote_average: number
   vote_count: number
+  popularity: number
+  adult: boolean
 }
 
 type SearchResponse = {
@@ -21,11 +23,10 @@ type SearchResponse = {
   total_results: number
 }
 
-async function fetchSearchPage(query: string, page: number, signal?: AbortSignal): Promise<SearchResponse> {
+async function tmdbGet<T>(path: string, params: Record<string, string>, signal?: AbortSignal): Promise<T> {
   if (!TOKEN) throw new Error('Missing VITE_TMDB_TOKEN in .env.local')
 
-  const params = new URLSearchParams({ query, include_adult: 'false', page: String(page) })
-  const response = await fetch(`${API_URL}/search/movie?${params}`, {
+  const response = await fetch(`${API_URL}${path}?${new URLSearchParams(params)}`, {
     headers: {
       Authorization: `Bearer ${TOKEN}`,
       Accept: 'application/json',
@@ -33,9 +34,18 @@ async function fetchSearchPage(query: string, page: number, signal?: AbortSignal
     signal,
   })
 
+  if (response.status === 404) throw new Error('Movie not found')
   if (!response.ok) throw new Error(`TMDB error ${response.status}`)
 
   return response.json()
+}
+
+function fetchSearchPage(query: string, page: number, signal?: AbortSignal): Promise<SearchResponse> {
+  return tmdbGet('/search/movie', { query, include_adult: 'false', page: String(page) }, signal)
+}
+
+export function getMovie(id: number, signal?: AbortSignal): Promise<Movie> {
+  return tmdbGet(`/movie/${id}`, {}, signal)
 }
 
 export async function searchMovies(query: string, limit: number, signal?: AbortSignal): Promise<Movie[]> {

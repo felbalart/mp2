@@ -4,7 +4,6 @@ import SortControls from '../components/SortControls'
 import MovieList from '../components/MovieList'
 import { useMovieSearch } from '../hooks/useMovieSearch'
 import { sortMovies, type SortOption } from '../utils/sortMovies'
-import './ListView.css'
 
 function ListView() {
   const [query, setQuery] = useState('')

@@ -10,3 +10,12 @@
   text-transform: uppercase;
   letter-spacing: 1px;
 }
+
+.list-status {
+  margin: 0;
+  color: #777;
+
+  &.error {
+    color: #c0392b;
+  }
+}

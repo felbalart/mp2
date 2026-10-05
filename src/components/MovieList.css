@@ -17,11 +17,19 @@
   border: 1px solid #e2e2dc;
   border-left: 6px solid var(--bb-blue);
   border-radius: 4px;
+  color: inherit;
+  text-decoration: none;
   transition: box-shadow 0.2s, border-color 0.2s;
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
     border-left-color: var(--bb-yellow);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--bb-yellow);
+    outline-offset: 2px;
   }
 }
 
