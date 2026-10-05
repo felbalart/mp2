@@ -15,7 +15,7 @@ function MovieListItem({ movie }: MovieListItemProps) {
 
   return (
     <li>
-      <Link className="movie-item" to={`/detail/${movie.id}`}>
+      <Link className="movie-item" to={`/detail/${movie.id}`} state={{ source: 'list' }}>
         {poster ? (
           <img className="movie-poster" src={poster} alt={`${movie.title} poster`} loading="lazy" />
         ) : (

@@ -6,9 +6,10 @@ import './MovieNav.css'
 type MovieNavProps = {
   movies: Movie[]
   currentId: number
+  source: string
 }
 
-function MovieNav({ movies, currentId }: MovieNavProps) {
+function MovieNav({ movies, currentId, source }: MovieNavProps) {
   const navigate = useNavigate()
   const index = movies.findIndex((movie) => movie.id === currentId)
   const prev = index > 0 ? movies[index - 1] : null
@@ -18,20 +19,20 @@ function MovieNav({ movies, currentId }: MovieNavProps) {
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement
       if (target.closest('input, textarea, select, [contenteditable="true"]')) return
-      if (e.key === 'ArrowLeft' && prev) navigate(`/detail/${prev.id}`)
-      if (e.key === 'ArrowRight' && next) navigate(`/detail/${next.id}`)
+      if (e.key === 'ArrowLeft' && prev) navigate(`/detail/${prev.id}`, { state: { source } })
+      if (e.key === 'ArrowRight' && next) navigate(`/detail/${next.id}`, { state: { source } })
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [prev, next, navigate])
+  }, [prev, next, navigate, source])
 
   if (index === -1) return null
 
   return (
     <nav className="movie-nav" aria-label="Movie navigation">
       {prev ? (
-        <Link className="movie-nav-arrow" to={`/detail/${prev.id}`} title={prev.title} aria-label={`Previous: ${prev.title}`}>
+        <Link className="movie-nav-arrow" to={`/detail/${prev.id}`} state={{ source }} title={prev.title} aria-label={`Previous: ${prev.title}`}>
           ‹
         </Link>
       ) : (
@@ -45,7 +46,7 @@ function MovieNav({ movies, currentId }: MovieNavProps) {
       </span>
 
       {next ? (
-        <Link className="movie-nav-arrow" to={`/detail/${next.id}`} title={next.title} aria-label={`Next: ${next.title}`}>
+        <Link className="movie-nav-arrow" to={`/detail/${next.id}`} state={{ source }} title={next.title} aria-label={`Next: ${next.title}`}>
           ›
         </Link>
       ) : (

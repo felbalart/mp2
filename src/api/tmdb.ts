@@ -2,6 +2,7 @@ const API_URL = 'https://api.themoviedb.org/3'
 const IMAGE_URL = 'https://image.tmdb.org/t/p'
 const TOKEN = import.meta.env.VITE_TMDB_TOKEN
 const PAGE_SIZE = 20
+const MIN_VOTES_FOR_TOP = 500
 
 export type Movie = {
   id: number
@@ -16,7 +17,7 @@ export type Movie = {
   adult: boolean
 }
 
-type SearchResponse = {
+type PagedResponse = {
   page: number
   results: Movie[]
   total_pages: number
@@ -40,21 +41,21 @@ async function tmdbGet<T>(path: string, params: Record<string, string>, signal?:
   return response.json()
 }
 
-function fetchSearchPage(query: string, page: number, signal?: AbortSignal): Promise<SearchResponse> {
-  return tmdbGet('/search/movie', { query, include_adult: 'false', page: String(page) }, signal)
-}
-
 export function getMovie(id: number, signal?: AbortSignal): Promise<Movie> {
   return tmdbGet(`/movie/${id}`, {}, signal)
 }
 
-export async function searchMovies(query: string, limit: number, signal?: AbortSignal): Promise<Movie[]> {
-  const first = await fetchSearchPage(query, 1, signal)
-  const pagesNeeded = Math.min(Math.ceil(limit / PAGE_SIZE), first.total_pages)
+async function fetchPages(
+  path: string,
+  params: Record<string, string>,
+  limit: number,
+  signal?: AbortSignal,
+): Promise<Movie[]> {
+  const fetchPage = (page: number) => tmdbGet<PagedResponse>(path, { ...params, page: String(page) }, signal)
 
-  const rest = await Promise.all(
-    Array.from({ length: pagesNeeded - 1 }, (_, i) => fetchSearchPage(query, i + 2, signal)),
-  )
+  const first = await fetchPage(1)
+  const pagesNeeded = Math.min(Math.ceil(limit / PAGE_SIZE), first.total_pages)
+  const rest = await Promise.all(Array.from({ length: Math.max(pagesNeeded - 1, 0) }, (_, i) => fetchPage(i + 2)))
 
   const seen = new Set<number>()
   return [first, ...rest]
@@ -63,6 +64,21 @@ export async function searchMovies(query: string, limit: number, signal?: AbortS
     .slice(0, limit)
 }
 
-export function posterUrl(path: string | null, size: 'w92' | 'w154' | 'w342' | 'w500' = 'w154'): string | null {
+export function searchMovies(query: string, limit: number, signal?: AbortSignal): Promise<Movie[]> {
+  return fetchPages('/search/movie', { query, include_adult: 'false' }, limit, signal)
+}
+
+export function getTopRatedMovies(genreId: number | null, limit: number, signal?: AbortSignal): Promise<Movie[]> {
+  const params: Record<string, string> = {
+    sort_by: 'vote_average.desc',
+    'vote_count.gte': String(MIN_VOTES_FOR_TOP),
+    include_adult: 'false',
+  }
+  if (genreId !== null) params.with_genres = String(genreId)
+
+  return fetchPages('/discover/movie', params, limit, signal)
+}
+
+export function posterUrl(path: string | null, size: 'w92' | 'w154' | 'w185' | 'w342' | 'w500' = 'w154'): string | null {
   return path ? `${IMAGE_URL}/${size}${path}` : null
 }
