@@ -1,0 +1,17 @@
+.first-match {
+  margin: 0;
+  color: var(--text);
+
+  #first_match {
+    font-weight: 800;
+    color: var(--bb-blue);
+  }
+
+  em {
+    color: #777;
+  }
+
+  .error {
+    color: #c0392b;
+  }
+}

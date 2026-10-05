@@ -1,18 +1,24 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type ChangeEvent, type FormEvent } from 'react'
 import './SearchForm.css'
 
 type SearchFormProps = {
   placeholder?: string
-  onSearch: (query: string) => void
+  onChange?: (query: string) => void
+  onSearch?: (query: string) => void
 }
 
-function SearchForm({ placeholder = 'Search movies...', onSearch }: SearchFormProps) {
+function SearchForm({ placeholder = 'Search movies...', onChange, onSearch }: SearchFormProps) {
   const [query, setQuery] = useState('')
   const trimmed = query.trim()
 
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value)
+    onChange?.(e.target.value)
+  }
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (trimmed) onSearch(trimmed)
+    if (trimmed) onSearch?.(trimmed)
   }
 
   return (
@@ -20,7 +26,7 @@ function SearchForm({ placeholder = 'Search movies...', onSearch }: SearchFormPr
       <input
         type="search"
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={handleChange}
         placeholder={placeholder}
         aria-label="Search movies"
       />
