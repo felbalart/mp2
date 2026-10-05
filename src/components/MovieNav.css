@@ -1,0 +1,47 @@
+.movie-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.movie-nav-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding-bottom: 4px;
+  border: 2px solid var(--bb-blue);
+  border-radius: 50%;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--bb-yellow);
+  background: var(--bb-blue);
+  text-decoration: none;
+  transition: transform 0.15s, background 0.2s, color 0.2s;
+
+  &:hover {
+    transform: scale(1.08);
+    color: var(--bb-blue);
+    background: var(--bb-yellow);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--bb-yellow);
+    outline-offset: 2px;
+  }
+
+  &.disabled {
+    opacity: 0.25;
+    pointer-events: none;
+  }
+}
+
+.movie-nav-position {
+  min-width: 64px;
+  text-align: center;
+  font-weight: 800;
+  color: var(--bb-blue);
+}

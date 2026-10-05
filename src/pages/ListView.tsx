@@ -1,21 +1,15 @@
-import { useState } from 'react'
 import SearchForm from '../components/SearchForm'
 import SortControls from '../components/SortControls'
 import MovieList from '../components/MovieList'
-import { useMovieSearch } from '../hooks/useMovieSearch'
-import { sortMovies, type SortOption } from '../utils/sortMovies'
+import { useMovieSearchContext } from '../context/movieSearchContext'
 
 function ListView() {
-  const [query, setQuery] = useState('')
-  const [sort, setSort] = useState<SortOption | null>(null)
-  const search = useMovieSearch(query)
-
-  const movies = search.status === 'success' ? sortMovies(search.movies, sort) : []
+  const { query, setQuery, sort, setSort, search, movies } = useMovieSearchContext()
 
   return (
     <section>
       <h1>List</h1>
-      <SearchForm onChange={setQuery} />
+      <SearchForm value={query} onChange={setQuery} />
       <SortControls value={sort} onChange={setSort} />
 
       {search.status === 'idle' && <p className="list-status">Type at least 4 characters to search.</p>}

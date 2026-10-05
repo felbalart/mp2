@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { searchMovies, type Movie } from '../api/tmdb'
 
 const MIN_LENGTH = 4
@@ -42,8 +42,10 @@ export function useMovieSearch(rawQuery: string): MovieSearchState {
     }
   }, [query])
 
-  if (!query) return { status: 'idle' }
-  if (result?.query !== query) return { status: 'loading' }
-  if (result.error) return { status: 'error', message: result.error }
-  return { status: 'success', movies: result.movies }
+  return useMemo<MovieSearchState>(() => {
+    if (!query) return { status: 'idle' }
+    if (result?.query !== query) return { status: 'loading' }
+    if (result.error) return { status: 'error', message: result.error }
+    return { status: 'success', movies: result.movies }
+  }, [query, result])
 }
