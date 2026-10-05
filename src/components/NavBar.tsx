@@ -11,19 +11,22 @@ const links = [
 function NavBar() {
   return (
     <header className="navbar">
-      <nav className="navbar-links">
-        {links.map(({ to, label }) => (
-          <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) =>
-              isActive ? 'navbar-link active' : 'navbar-link'
-            }
-          >
-            {label}
-          </NavLink>
-        ))}
-      </nav>
+      <div className="navbar-start">
+        <span className="navbar-title">Blockbuster's Bests</span>
+        <nav className="navbar-links">
+          {links.map(({ to, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                isActive ? 'navbar-link active' : 'navbar-link'
+              }
+            >
+              {label}
+            </NavLink>
+          ))}
+        </nav>
+      </div>
       <NavLink to="/" className="navbar-logo" aria-label="Blockbuster home">
         <img src={blockbusterLogo} alt="Blockbuster" />
       </NavLink>

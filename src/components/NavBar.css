@@ -8,6 +8,23 @@
   border-bottom: 6px solid var(--bb-blue);
 }
 
+.navbar-start {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 28px;
+}
+
+.navbar-title {
+  font-size: 24px;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--bb-blue);
+}
+
 .navbar-links {
   display: flex;
   gap: 8px;
@@ -42,6 +59,10 @@
 @media (max-width: 600px) {
   .navbar {
     padding: 8px 12px;
+  }
+
+  .navbar-title {
+    font-size: 18px;
   }
 
   .navbar-link {
