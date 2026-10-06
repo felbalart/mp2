@@ -34,6 +34,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Check token secret is present
+        run: |
+          if [ -z "$VITE_TMDB_TOKEN" ]; then
+            echo "VITE_TMDB_TOKEN is EMPTY - the secret is missing or misnamed"
+            exit 1
+          fi
+          echo "VITE_TMDB_TOKEN received, length: ${#VITE_TMDB_TOKEN}"
+        env:
+          VITE_TMDB_TOKEN: ${{ secrets.VITE_TMDB_TOKEN }}
+
       - name: Build site
         run: npm run build
         env:
