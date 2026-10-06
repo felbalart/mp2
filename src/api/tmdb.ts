@@ -1,3 +1,5 @@
+import axios, { isAxiosError } from 'axios'
+
 const API_URL = 'https://api.themoviedb.org/3'
 const IMAGE_URL = 'https://image.tmdb.org/t/p'
 const TOKEN = import.meta.env.VITE_TMDB_TOKEN
@@ -24,21 +26,27 @@ type PagedResponse = {
   total_results: number
 }
 
+const tmdb = axios.create({
+  baseURL: API_URL,
+  headers: {
+    Authorization: `Bearer ${TOKEN}`,
+    Accept: 'application/json',
+  },
+})
+
 async function tmdbGet<T>(path: string, params: Record<string, string>, signal?: AbortSignal): Promise<T> {
   if (!TOKEN) throw new Error('Missing VITE_TMDB_TOKEN in .env.local')
 
-  const response = await fetch(`${API_URL}${path}?${new URLSearchParams(params)}`, {
-    headers: {
-      Authorization: `Bearer ${TOKEN}`,
-      Accept: 'application/json',
-    },
-    signal,
-  })
-
-  if (response.status === 404) throw new Error('Movie not found')
-  if (!response.ok) throw new Error(`TMDB error ${response.status}`)
-
-  return response.json()
+  try {
+    const response = await tmdb.get<T>(path, { params, signal })
+    return response.data
+  } catch (err) {
+    if (isAxiosError(err) && err.response) {
+      if (err.response.status === 404) throw new Error('Movie not found', { cause: err })
+      throw new Error(`TMDB error ${err.response.status}`, { cause: err })
+    }
+    throw err
+  }
 }
 
 export function getMovie(id: number, signal?: AbortSignal): Promise<Movie> {

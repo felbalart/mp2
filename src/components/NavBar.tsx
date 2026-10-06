@@ -12,7 +12,7 @@ function NavBar() {
   return (
     <header className="navbar">
       <div className="navbar-start">
-        <span className="navbar-title">Blockbuster's Bests</span>
+        <span className="navbar-title">Blockbuster's Best</span>
         <nav className="navbar-links">
           {links.map(({ to, label }) => (
             <NavLink
