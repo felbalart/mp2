@@ -9,6 +9,11 @@
   margin: 0;
 }
 
+.movie-detail-title {
+  font-family: var(--display);
+  font-weight: 900;
+}
+
 .movie-detail-poster {
   width: 100%;
   max-width: 342px;

@@ -5,7 +5,9 @@
 
 .page h1 {
   margin: 0 0 8px;
-  font-size: 32px;
+  font-family: var(--display);
+  font-size: 38px;
+  font-weight: 900;
   color: var(--bb-blue);
   text-transform: uppercase;
   letter-spacing: 1px;
